@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { ImageBackground, SafeAreaView, StyleSheet } from "react-native";
 import StartGame from "./screens/StartGame";
@@ -37,7 +37,7 @@ export default function App() {
   function newGameHadler() {
     setIsGameOver(false);
     setUserNumber("");
-    currentGuessCount(1);
+    setCurrentGuessCount(1);
   }
 
   function guessCount() {

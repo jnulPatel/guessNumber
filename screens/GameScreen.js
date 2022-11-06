@@ -1,4 +1,10 @@
-import { Alert, FlatList, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  FlatList,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import Title from "../components/ui/Title";
 import NumberContainer from "../components/game/NumberContainer";
@@ -63,9 +69,11 @@ const GameScreen = ({ userNumber, onGameOver, OnGuessCount }) => {
     setGuessRound((prev) => [newRndNum, ...prev]);
     OnGuessCount();
   }
-  return (
-    <View style={styles.screen}>
-      <Title>Opponent's Guess</Title>
+
+  const { width, height } = useWindowDimensions();
+
+  let content = (
+    <>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card>
         <InstructionText style={styles.instructionText}>
@@ -104,7 +112,49 @@ const GameScreen = ({ userNumber, onGameOver, OnGuessCount }) => {
           </View>
         </View>
       </Card>
-      <View style={styles.listContainer}>
+    </>
+  );
+
+  if (width > height) {
+    content = (
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={styles.btnContainer}>
+          <PrimaryButton
+            onPress={() =>
+              currentGuess < userNumber
+                ? nextGuessHandler("greater")
+                : Alert.alert("Don't Lie", "You know that this is worong...", [
+                    { text: "Sorry!", style: "cancel" },
+                  ])
+            }
+          >
+            <Ionicons name="md-add" size={24} />
+          </PrimaryButton>
+        </View>
+        <NumberContainer>{currentGuess}</NumberContainer>
+        <View style={styles.btnContainer}>
+          <PrimaryButton
+            onPress={() =>
+              currentGuess > userNumber
+                ? nextGuessHandler("lower")
+                : Alert.alert("Don't Lie", "You know that this is worong...", [
+                    { text: "Sorry!", style: "cancel" },
+                  ])
+            }
+          >
+            <Ionicons name="md-remove" size={24} />
+          </PrimaryButton>
+        </View>
+      </View>
+    );
+  }
+  return (
+    <View style={[styles.screen, { padding: width > height ? 12 : 24 }]}>
+      <Title>Opponent's Guess</Title>
+      {content}
+      <View
+        style={[styles.listContainer, { padding: width > height ? 8 : 16 }]}
+      >
         <FlatList
           data={guessRound}
           renderItem={(itemData) => (
@@ -122,8 +172,9 @@ export default GameScreen;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    padding: 24,
     marginTop: 20,
+    alignItems: "center",
+    justifyContent: "center",
   },
   btnsContainer: {
     flexDirection: "row",
@@ -136,6 +187,5 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    padding: 16,
   },
 });

@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import React from "react";
 import Colors from "../../constants/Colors";
 
 const GameLogs = ({ roundNum, guess }) => {
+  const { width, height } = useWindowDimensions();
+  const size = height > width ? "100%" : "80%";
   return (
-    <View style={styles.listItem}>
+    <View style={[styles.listItem, { width: size }]}>
       <Text style={styles.itemText}>#{roundNum}</Text>
       <Text style={styles.itemText}> Opponent's Guess : {guess}</Text>
     </View>
@@ -23,8 +25,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accent500,
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "100%",
     elevation: 4,
+    alignSelf: "center",
     shadowColor: "black",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.25,
